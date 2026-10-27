@@ -2,17 +2,25 @@
 from __future__ import annotations
 from dataclasses import dataclass
 
+
 @dataclass(frozen=True, slots=True)
 class SynthesisOptions:
     rate: int = 180
     volume: float = 1.0
     voice_id: str | None = None
-    language: str | None = None
+    language: str | None = "en-US"
     output_format: str = "wav"
+
     def validate(self) -> None:
-        if not 80 <= self.rate <= 400: raise ValueError("rate must be between 80 and 400")
-        if not 0.0 <= self.volume <= 1.0: raise ValueError("volume must be between 0.0 and 1.0")
-        if self.output_format.lower() not in {"wav"}: raise ValueError("only wav output is currently supported")
+        if not 80 <= self.rate <= 400:
+            raise ValueError("rate must be between 80 and 400")
+        if not 0.0 <= self.volume <= 1.0:
+            raise ValueError("volume must be between 0.0 and 1.0")
+        if self.output_format.lower() not in {"wav"}:
+            raise ValueError("only wav output is currently supported")
+        if self.language and not self.language.lower().startswith("en"):
+            raise ValueError("this English synthesis configuration only supports en-* languages")
+
 
 @dataclass(frozen=True, slots=True)
 class VoiceInfo:
@@ -21,7 +29,9 @@ class VoiceInfo:
     languages: tuple[str, ...] = ()
     gender: str | None = None
 
+
 @dataclass(frozen=True, slots=True)
 class SynthesisResult:
     path: str
     voice_id: str | None = None
+    job_id: str | None = None
