@@ -4,7 +4,7 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Any
 
-from sqlalchemy import JSON, Boolean, DateTime, Float, Integer, String, Text, UniqueConstraint, func
+from sqlalchemy import JSON, BigInteger, Boolean, DateTime, Float, Integer, String, Text, UniqueConstraint, func
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from sqlalchemy.dialects.mysql import LONGTEXT
 
@@ -17,7 +17,7 @@ class VoiceRecord(Base):
     __tablename__ = "voices"
     __table_args__ = (UniqueConstraint("backend", "voice_id", name="uq_voice_backend_id"),)
 
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
     backend: Mapped[str] = mapped_column(String(64), nullable=False)
     voice_id: Mapped[str] = mapped_column(String(512), nullable=False)
     name: Mapped[str] = mapped_column(String(255), nullable=False)
@@ -43,7 +43,7 @@ class SynthesisJobRecord(Base):
     output_path: Mapped[str | None] = mapped_column(String(1024))
     status: Mapped[str] = mapped_column(String(16), default="queued", nullable=False)
     error_message: Mapped[str | None] = mapped_column(Text)
-    duration: Mapped[float | None] = mapped_column(Float)
+    duration: Mapped[float | None] = mapped_column("duration_seconds", Float)
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now(), nullable=False)
     started_at: Mapped[datetime | None] = mapped_column(DateTime)
     completed_at: Mapped[datetime | None] = mapped_column(DateTime)
