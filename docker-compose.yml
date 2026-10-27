@@ -1,0 +1,44 @@
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: speech-synthesize-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: speech_synthesize
+      MYSQL_USER: speech_app
+      MYSQL_PASSWORD: ${SPEECH_DB_PASSWORD:-change-me}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root-change-me}
+    ports:
+      - "3306:3306"
+    volumes:
+      - speech_mysql_data:/var/lib/mysql
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/001-schema.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p$${MYSQL_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      SPEECH_DB_ENABLED: "true"
+      SPEECH_DB_HOST: mysql
+      SPEECH_DB_PORT: "3306"
+      SPEECH_DB_NAME: speech_synthesize
+      SPEECH_DB_USER: speech_app
+      SPEECH_DB_PASSWORD: ${SPEECH_DB_PASSWORD:-change-me}
+      SPEECH_OUTPUT_DIR: /app/output
+    ports:
+      - "8000:8000"
+    volumes:
+      - speech_output:/app/output
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+volumes:
+  speech_mysql_data:
+  speech_output:
