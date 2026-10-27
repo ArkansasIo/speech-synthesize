@@ -1,0 +1,9 @@
+[engine]
+backend = "pyttsx3"
+rate = 180
+volume = 1.0
+max_chars = 100000
+
+[output]
+directory = "output"
+format = "wav"

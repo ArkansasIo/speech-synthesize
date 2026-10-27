@@ -1,6 +1,5 @@
-"""Speech Synthesize: a small, extensible text-to-speech toolkit."""
-
-from .engine import SynthesisError, SynthesisOptions, list_voices, synthesize_to_file
-
-__all__ = ["SynthesisError", "SynthesisOptions", "list_voices", "synthesize_to_file"]
-__version__ = "0.1.0"
+"""Public package API."""
+from .engine import SpeechSynthesizer
+from .models import SynthesisOptions, SynthesisResult, VoiceInfo
+from .exceptions import SpeechSynthesizeError, SynthesisError
+__all__=["SpeechSynthesizer","SynthesisOptions","SynthesisResult","VoiceInfo","SpeechSynthesizeError","SynthesisError"]
