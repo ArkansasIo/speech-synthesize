@@ -7,3 +7,13 @@ max_chars = 100000
 [output]
 directory = "output"
 format = "wav"
+
+[english]
+language = "en-US"
+locale = "en_US"
+encoding = "utf-8"
+default_rate = 180
+default_volume = 1.0
+
+[database]
+enabled = false
